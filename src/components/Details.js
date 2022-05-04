@@ -2,12 +2,14 @@ import { Alert, Snackbar } from '@mui/material';
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../contexts/CartContext';
+import { UsageContext } from '../contexts/UsageTrackerContext';
 
 
 function Details() {
     const [data, setdata] = useState([])
     const [gotdata, setgotdata] = useState(false)
     const [open, setOpen] = React.useState(false);
+    const [usageContext, setUsageContext] = useContext(UsageContext);
     const navigate = useNavigate();
     const goHome = useCallback(() => navigate('/', {replace: true}), [navigate]);
     const handleClick = () => {
@@ -33,11 +35,13 @@ function Details() {
             .then(json=>{
                 setdata(json)
                 setgotdata(true)
+                setUsageContext([...usageContext,json])
             })
+        
     },[])
     if(gotdata){
 
-        
+
 
         return (
             <>

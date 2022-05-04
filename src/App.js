@@ -6,6 +6,8 @@ import Details from './components/Details';
 import { Link, Route, Routes } from 'react-router-dom';
 import Cart from './components/Cart';
 import { CartContextProvider } from './contexts/CartContext';
+import { UsageContextProvider } from './contexts/UsageTrackerContext';
+import UsageTracker from './components/UsageTracker';
 
 
 function App() {
@@ -39,7 +41,10 @@ function App() {
                 <Link to={"/"} className="nav-link active" aria-current="page">Home</Link>
               </li>
               <li className="nav-item">
-                <Link to={"cart"} className="nav-link" href="#">Cart</Link>
+                <Link to={"cart"} className="nav-link" >Cart</Link>
+              </li>
+              <li className="nav-item">
+                <Link to={"usage"} className="nav-link" >Usage</Link>
               </li>
               <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -63,11 +68,14 @@ function App() {
       </nav>
 
       <CartContextProvider >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="details" element={<Details />} />
-          <Route path="cart" element={<Cart />} />
-        </Routes>
+        <UsageContextProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="details" element={<Details />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="usage" element={<UsageTracker />} />
+          </Routes>
+        </UsageContextProvider>
       </CartContextProvider>
     </div>
   );
