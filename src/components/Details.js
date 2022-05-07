@@ -1,12 +1,13 @@
 import { Alert, Snackbar } from '@mui/material';
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from '../contexts/CartContext';
 import { UsageContext } from '../contexts/UsageTrackerContext';
 
 
 function Details() {
     const [data, setdata] = useState([])
+    const [cats, setcats] = useState([])
     const [gotdata, setgotdata] = useState(false)
     const [open, setOpen] = React.useState(false);
     const [usageContext, setUsageContext] = useContext(UsageContext);
@@ -36,8 +37,17 @@ function Details() {
                 setdata(json)
                 setgotdata(true)
                 setUsageContext([...usageContext,json])
+
+
+                fetch(`https://fakestoreapi.com/products/category/${json.category}`)
+                .then(res=>res.json())
+                .then(json=>{
+
+                    setcats(json)
+                })
             })
         
+
     },[])
     if(gotdata){
 
@@ -49,7 +59,7 @@ function Details() {
                     <div class="container-fluid">
                         <div class="row row-sm">
                             <div class="col-md-6 _boxzoom flex items-center justify-center">
-                                <img class="darkmode-ignore image" src={data.image} width={500} alt="" />
+                                <img class="darkmode-ignore image" src={data.image} width={400} alt="" />
                             </div>
                             <div class="col-md-6">
                                 <div class="_product-detail-content">
@@ -94,6 +104,48 @@ function Details() {
                         </div>
                     </div>
                 </section>
+                <div className="container">
+                <p class="h1 mt-5 pt-5">Other Products</p>
+                <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+    
+                    {
+                        cats.map((obj,index)=>{
+                            console.log(obj);
+                            return (
+                                <div className="col mt-5">
+                                    <div className="card" style={{ width: '18rem' }}>
+                                        <img src={obj.image} className="darkmode-ignore image card-img-top p-3" alt="..." />
+                                        <div className="card-body">
+                                            <h5 className="card-title">{obj.title}</h5>
+                                            <p className="card-text line-clamp">{obj.description}</p>
+                                            <Link to={"/details?id=" + (index + 1)} className="btn btn-primary">Take this</Link>
+                                            <button class="btn-theme btn btn-success ml-5" onClick={() => {
+                                                setCartContext([...cartContext, obj])
+                                                handleClick()
+                                            }}>
+                                                <i class="fa fa-shopping-cart"></i> Add to Cart
+                                            </button>
+                                            <Snackbar
+                                                color='success'
+                                                open={open}
+                                                autoHideDuration={6000}
+                                                onClose={handleClose}
+                                                message="Item added to cart"
+                                            >
+                                                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                                                    Item added to cart!
+                                                </Alert>
+                                            </Snackbar>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            )
+                        })
+                    }
+    
+                </div>
+            </div>
     
             </>
         )
